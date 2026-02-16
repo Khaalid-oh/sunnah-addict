@@ -16,12 +16,12 @@ const INFO_LINKS = ["Sustainability", "Our Story", "FAQs"];
 export default function Footer() {
   return (
     <footer className="border-t border-zinc-200 bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col">
             <Link
               href="/"
-              className="flex shrink-0 items-center mb-2"
+              className="flex shrink-0 items-center sm:mb-2"
               aria-label="Sunnah Addict Home"
             >
               <Image
@@ -30,9 +30,10 @@ export default function Footer() {
                 width={100}
                 height={100}
                 quality={100}
+                className="h-18 w-18 object-contain sm:h-16 sm:w-16 lg:h-20 lg:w-20 xl:h-[100px] xl:w-[100px]"
               />
             </Link>
-            <p className="mb-4 text-xs leading-6 text-zinc-600">
+            <p className="mb-1 sm:mb-4 text-sm leading-6 text-zinc-600">
               Sign up to receive regular updates, latest offers and more!
             </p>
             <form
@@ -100,9 +101,11 @@ export default function Footer() {
             </p>
             <div className="mt-4 flex gap-4">
               <a
-                href="#"
+                href="https://x.com/sunnah_addict"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-zinc-600 hover:text-black"
-                aria-label="Facebook"
+                aria-label="X (Twitter)"
               >
                 <svg
                   className="h-5 w-5"
@@ -110,15 +113,13 @@ export default function Footer() {
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                    clipRule="evenodd"
-                  />
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/addictsunnah/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-zinc-600 hover:text-black"
                 aria-label="Instagram"
               >
@@ -136,7 +137,9 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="https://pin.it/4k62y0CS7"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-zinc-600 hover:text-black"
                 aria-label="Pinterest"
               >
@@ -147,6 +150,22 @@ export default function Footer() {
                   aria-hidden="true"
                 >
                   <path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z" />
+                </svg>
+              </a>
+              <a
+                href="https://www.tiktok.com/@sunnah_addict"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-600 hover:text-black"
+                aria-label="TikTok"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1.05-.08 6.33 6.33 0 00-6.33 6.33 6.33 6.33 0 0010.88 4.43v-6.1a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
                 </svg>
               </a>
             </div>

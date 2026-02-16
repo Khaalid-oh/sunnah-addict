@@ -1,5 +1,21 @@
 export const gql = String.raw;
 
+export const cartQuery = gql`
+  query Cart($id: ID!) {
+    cart(id: $id) {
+      id
+      checkoutUrl
+      lines(first: 100) {
+        edges {
+          node {
+            quantity
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const discoverCollectionQuery = gql`
   query DiscoverCollection($handle: String!) {
     collection(handle: $handle) {
