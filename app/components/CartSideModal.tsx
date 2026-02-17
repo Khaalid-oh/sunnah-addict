@@ -13,6 +13,19 @@ function formatPrice(amount: string, code: string) {
   return `${code} ${Number(amount).toFixed(2)}`;
 }
 
+/** Unit price from line (price.amount is per-item; cost.amount is line total). */
+function getUnitPrice(line: CartLine): number {
+  if (line.price?.amount) return Number(line.price.amount);
+  if (line.cost?.amount && line.quantity)
+    return Number(line.cost.amount) / line.quantity;
+  return 0;
+}
+
+/** Line total for display; uses current quantity so total updates in real time. */
+function getLineTotal(line: CartLine): number {
+  return getUnitPrice(line) * line.quantity;
+}
+
 export default function CartSideModal() {
   const { cartOpen, setCartOpen, refreshCart, setCartCount } = useCart();
   const [lines, setLines] = useState<CartLine[]>([]);
@@ -127,10 +140,10 @@ export default function CartSideModal() {
     [lines, setCartCount, refreshCart]
   );
 
-  const totalAmount = lines?.reduce((sum, line) => {
-    const amt = line.cost?.amount ?? line.price?.amount ?? "0";
-    return sum + Number(amt);
-  }, 0);
+  const totalAmount = lines?.reduce(
+    (sum, line) => sum + getLineTotal(line),
+    0
+  ) ?? 0;
   const currencyCode =
     lines[0]?.cost?.currencyCode ?? lines[0]?.price?.currencyCode ?? "NGN";
 
@@ -232,17 +245,23 @@ export default function CartSideModal() {
                           </span>
                         )}
                       <span className="text-zinc-900">
-                        {line.price
-                          ? formatPrice(
-                              line.price.amount,
-                              line.price.currencyCode ?? "NGN",
-                            )
-                          : line.cost
-                            ? formatPrice(
-                                line.cost.amount,
-                                line.cost.currencyCode ?? "NGN",
-                              )
-                            : ""}
+                        {formatPrice(
+                          String(getLineTotal(line)),
+                          line.price?.currencyCode ??
+                            line.cost?.currencyCode ??
+                            "NGN",
+                        )}
+                        {line.quantity > 1 && (
+                          <span className="ml-1 text-zinc-500">
+                            ({formatPrice(
+                              String(getUnitPrice(line)),
+                              line.price?.currencyCode ??
+                                line.cost?.currencyCode ??
+                                "NGN",
+                            )}{" "}
+                            each)
+                          </span>
+                        )}
                       </span>
                     </div>
                     <div className="mt-3 flex items-center gap-2">

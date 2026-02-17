@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useProductPreview } from "../contexts/ProductPreviewContext";
 
 type ProductItem = {
   id: string;
@@ -30,7 +29,6 @@ export default function CollectionGrid({
   viewAllLabel = "VIEW ALL PRODUCTS",
   showViewAll = true,
 }: CollectionGridProps) {
-  const { openPreview } = useProductPreview();
   const items = products.map((p) => ({
     ...p,
     handle: toHandle(p),
@@ -81,13 +79,6 @@ export default function CollectionGrid({
                   {item.title}
                 </p>
               </Link>
-              <button
-                type="button"
-                onClick={() => openPreview(item.handle)}
-                className="absolute bottom-12 left-1/2 -translate-x-1/2 border border-black bg-white px-4 py-2 text-xs font-medium uppercase tracking-widest text-black opacity-0 transition group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-              >
-                Quick view
-              </button>
             </div>
           ))}
         </div>
