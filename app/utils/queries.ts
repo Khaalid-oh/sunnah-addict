@@ -137,7 +137,7 @@ export const productsQuery = gql`
   }
 `;
 
-/** Single product by ID only (2026-01 Storefront API). Fetches handle for links/consistency. */
+/** Single product by ID (2026-01 Storefront API). */
 export const singleProductQuery = gql`
   query SingleProduct($id: ID!) {
     product(id: $id) {
@@ -146,10 +146,56 @@ export const singleProductQuery = gql`
       handle
       description
       descriptionHtml
-            featuredImage {
-            url
-            altText
+      featuredImage {
+        url
+        altText
+      }
+      media(first: 20) {
+        edges {
+          node {
+            ... on MediaImage {
+              image {
+                url
+                altText
+              }
+            }
           }
+        }
+      }
+      variants(first: 50) {
+        edges {
+          node {
+            id
+            title
+            availableForSale
+            selectedOptions {
+              name
+              value
+            }
+            price {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Single product by handle (for /products/[handle] routes). Same shape as singleProductQuery. */
+export const singleProductByHandleQuery = gql`
+  query SingleProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      id
+      title
+      handle
+      description
+      descriptionHtml
+      featuredImage {
+        url
+        altText
+      }
       media(first: 20) {
         edges {
           node {

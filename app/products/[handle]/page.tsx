@@ -6,8 +6,12 @@ import ProductDetail, {
   type ProductDetailData,
 } from "../../components/ProductDetail";
 import YouMayAlsoLike from "../../components/YouMayAlsoLike";
+import { notFound } from "next/navigation";
 import { storefront } from "../../utils/storefront";
-import { singleProductQuery, allProductsQuery } from "../../utils/queries";
+import {
+  singleProductByHandleQuery,
+  allProductsQuery,
+} from "../../utils/queries";
 
 type RawProduct = {
   id: string;
@@ -102,10 +106,7 @@ export async function generateMetadata({
   params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
   const { handle } = await params;
-  const idRes = await storefront(singleProductQuery, { handle });
-  const id = idRes?.data?.product?.id;
-  if (!id) return { title: "Product" };
-  const res = await storefront(singleProductQuery, { id });
+  const res = await storefront(singleProductByHandleQuery, { handle });
   const product = res?.data?.product;
   if (!product) return { title: "Product" };
   return {
@@ -114,25 +115,20 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<{ p: string }>;
+  params: Promise<{ handle: string }>;
 }) {
-  const { p } = await searchParams;
-  console.log("searchParams", p);
-  const idRes = await storefront(singleProductQuery, { id: p });
-  console.log("idRes", idRes);
-  const productId = idRes?.data?.product?.id;
-
+  const { handle } = await params;
   const [productRes, relatedRes] = await Promise.all([
-    storefront(singleProductQuery, { id: productId }),
+    storefront(singleProductByHandleQuery, { handle }),
     storefront(allProductsQuery, { first: 12 }),
   ]);
 
   const rawProduct = productRes?.data?.product ?? null;
+  if (!rawProduct) notFound();
 
   const product = mapProductForDetail(rawProduct);
-
   const relatedEdges = relatedRes?.data?.products?.edges ?? [];
   const relatedProducts = mapRelatedProducts(relatedEdges);
 

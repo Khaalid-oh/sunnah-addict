@@ -52,7 +52,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const firstAvailableVariant = product.variants.find((v) => v.availableForSale) ?? product.variants[0];
   const [selectedVariantId, setSelectedVariantId] = useState(firstAvailableVariant?.id ?? "");
   const [quantity, setQuantity] = useState(1);
-  const [descriptionOpen, setDescriptionOpen] = useState(false);
+  const [descriptionOpen, setDescriptionOpen] = useState(true);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -266,7 +266,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             </p>
           )}
 
-          {/* Retractable description (collapsed by default) */}
+          {/* Retractable description (open by default) */}
           {(product.description || product.descriptionHtml) && (
             <div className="mt-10 border-t border-zinc-200 pt-8">
               <button
