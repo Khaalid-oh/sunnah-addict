@@ -30,7 +30,7 @@ export default function Footer() {
                 width={100}
                 height={100}
                 quality={100}
-                className="h-18 w-18 object-contain sm:h-16 sm:w-16 lg:h-20 lg:w-20 xl:h-[100px] xl:w-[100px]"
+                className="h-18 w-18 object-contain sm:h-16 sm:w-16 lg:h-8 lg:w-20"
               />
             </Link>
             <p className="mb-1 sm:mb-4 text-sm leading-6 text-zinc-600">

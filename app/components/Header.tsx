@@ -37,7 +37,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white">
       <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:h-24 lg:gap-8 lg:px-8">
-        <div className="flex w-10 shrink-0 items-center lg:w-auto lg:flex-1 lg:justify-center">
+        <div className="flex w-10 shrink-0 items-center lg:justify-center">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
@@ -70,15 +70,16 @@ export default function Header() {
             <Image
               src="/_logo.svg"
               alt="Sunnah Addict Logo"
-              width={100}
-              height={100}
-              className="h-18 w-18 object-contain sm:h-16 sm:w-16 lg:h-20 lg:w-20 xl:h-[100px] xl:w-[100px]"
+              width={72}
+              height={72}
+              className="h-18 w-18 object-contain sm:h-20 sm:w-20 xl:h-[80px] xl:w-[80px]"
+              quality={100}
             />
           </Link>
         </div>
 
         <nav
-          className="hidden flex-1 justify-center gap-8 lg:flex"
+          className="hidden justify-center gap-8 lg:flex"
           aria-label="Main navigation"
         >
           {NAV_LINKS.map((link) => {
@@ -102,35 +103,7 @@ export default function Header() {
           })}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-4">
-          {!loading && (
-            <>
-              {customer ? (
-                <>
-                  <Link
-                    href="/account"
-                    className="hidden text-sm font-medium uppercase tracking-widest text-black transition hover:opacity-80 lg:block"
-                    onClick={closeMenu}
-                  >
-                    Account
-                  </Link>
-                  <a
-                    href="/api/auth/logout"
-                    className="hidden text-sm font-medium uppercase tracking-widest text-zinc-600 transition hover:text-black lg:inline"
-                  >
-                    Log out
-                  </a>
-                </>
-              ) : (
-                <a
-                  href="/api/auth/login"
-                  className="hidden text-sm font-medium uppercase tracking-widest text-black transition hover:opacity-80 lg:inline"
-                >
-                  Log in
-                </a>
-              )}
-            </>
-          )}
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
@@ -227,6 +200,62 @@ export default function Header() {
               </span>
             )}
           </Link>
+          {!loading && (
+            <>
+              {customer ? (
+                <>
+                  <Link
+                    href="/account"
+                    className="relative hidden h-10 w-10 shrink-0 items-center justify-center text-zinc-600 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 lg:flex"
+                    aria-label="Account"
+                    onClick={closeMenu}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  </Link>
+                  <a
+                    href="/api/auth/logout"
+                    className="hidden text-sm font-medium uppercase tracking-widest text-zinc-600 transition hover:text-black lg:inline"
+                  >
+                    Log out
+                  </a>
+                </>
+              ) : (
+                <a
+                  href="/api/auth/login"
+                  className="relative hidden h-10 w-10 shrink-0 items-center justify-center text-zinc-600 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 lg:flex"
+                  aria-label="Log in"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </a>
+              )}
+            </>
+          )}
         </div>
       </div>
 
