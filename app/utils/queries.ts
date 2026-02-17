@@ -8,7 +8,35 @@ export const cartQuery = gql`
       lines(first: 100) {
         edges {
           node {
+            id
             quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                image {
+                  url
+                  altText
+                }
+                price {
+                  amount
+                  currencyCode
+                }
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
+                product {
+                  handle
+                }
+              }
+            }
+            cost {
+              totalAmount {
+                amount
+                currencyCode
+              }
+            }
           }
         }
       }

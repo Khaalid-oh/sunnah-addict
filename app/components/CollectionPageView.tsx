@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
+import { useProductPreview } from "../contexts/ProductPreviewContext";
 
 export type CollectionProduct = {
   id: string;
@@ -65,6 +67,7 @@ export default function CollectionPageView({
 
   const closeFilter = useCallback(() => setFilterOpen(false), []);
   const closeSort = useCallback(() => setSortDropdownOpen(false), []);
+  const { openPreview } = useProductPreview();
 
   const categoryList = (
     <ul className="flex flex-col gap-0" role="list">
@@ -312,29 +315,40 @@ export default function CollectionPageView({
               {filteredAndSorted.map((item) => {
                 const handle = toHandle(item);
                 return (
-                  <a
+                  <div
                     key={item.id}
-                    href={`/products/${handle}?p=${item.id}`}
-                    className="group flex flex-col overflow-hidden focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                    className="group relative flex flex-col overflow-hidden"
                   >
-                    <div className="aspect-3/4 w-full overflow-hidden bg-zinc-200">
-                      {item.image?.url ? (
-                        <Image
-                          src={item.image.url}
-                          alt={item.image.altText ?? item.title}
-                          width={400}
-                          height={533}
-                          quality={90}
-                          className="h-full w-full object-cover object-center transition group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="h-full w-full bg-zinc-300" />
-                      )}
-                    </div>
-                    <p className="mt-3 text-center text-xs font-medium uppercase tracking-wide text-black group-hover:underline">
-                      {item.title}
-                    </p>
-                  </a>
+                    <Link
+                      href={`/products/${handle}`}
+                      className="flex flex-col focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                    >
+                      <div className="aspect-3/4 w-full overflow-hidden bg-zinc-200">
+                        {item.image?.url ? (
+                          <Image
+                            src={item.image.url}
+                            alt={item.image.altText ?? item.title}
+                            width={400}
+                            height={533}
+                            quality={90}
+                            className="h-full w-full object-cover object-center transition group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="h-full w-full bg-zinc-300" />
+                        )}
+                      </div>
+                      <p className="mt-3 text-center text-xs font-medium uppercase tracking-wide text-black group-hover:underline">
+                        {item.title}
+                      </p>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => openPreview(handle)}
+                      className="absolute bottom-12 left-1/2 -translate-x-1/2 border border-black bg-white px-4 py-2 text-xs font-medium uppercase tracking-widest text-black opacity-0 transition group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                    >
+                      Quick view
+                    </button>
+                  </div>
                 );
               })}
             </div>

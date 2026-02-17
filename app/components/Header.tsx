@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import SearchOverlay from "./SearchOverlay";
 import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../contexts/CartContext";
 
 const NAV_LINKS = [
   { label: "ALL", href: "/" },
@@ -21,17 +22,14 @@ export default function Header() {
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
   const { customer, loading } = useAuth();
+  const { cartCount, setCartOpen, refreshCart } = useCart();
 
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
-    fetch("/api/cart")
-      .then((res) => res.json())
-      .then((data) => setCartCount(data?.count ?? 0))
-      .catch(() => setCartCount(0));
-  }, []);
+    refreshCart();
+  }, [refreshCart]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white">
@@ -125,8 +123,9 @@ export default function Header() {
               <path d="m21 21-4.3-4.3" />
             </svg>
           </button>
-          <Link
-            href="/cart"
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
             className="relative flex h-10 w-10 shrink-0 items-center justify-center text-zinc-600 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 lg:hidden"
             aria-label={`Cart, ${cartCount} items`}
           >
@@ -150,7 +149,7 @@ export default function Header() {
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
-          </Link>
+          </button>
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
@@ -174,8 +173,9 @@ export default function Header() {
             </svg>
             <span>Search...</span>
           </button>
-          <Link
-            href="/cart"
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
             className="relative hidden h-10 w-10 shrink-0 items-center justify-center text-zinc-600 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 lg:flex"
             aria-label={`Cart, ${cartCount} items`}
           >
@@ -199,7 +199,7 @@ export default function Header() {
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
-          </Link>
+          </button>
           {!loading && (
             <>
               {customer ? (

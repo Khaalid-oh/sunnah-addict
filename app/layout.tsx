@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
+import { ProductPreviewProvider } from "./contexts/ProductPreviewContext";
+import CartSideModal from "./components/CartSideModal";
+import ProductPreviewModal from "./components/ProductPreviewModal";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -21,7 +25,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} font-sans antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <CartProvider>
+            <ProductPreviewProvider>
+              {children}
+              <CartSideModal />
+              <ProductPreviewModal />
+            </ProductPreviewProvider>
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

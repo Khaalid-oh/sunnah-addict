@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState, useEffect, useCallback } from "react";
+import { useProductPreview } from "../contexts/ProductPreviewContext";
 
 type ProductGridProps = {
   pretitle?: string;
@@ -47,6 +49,7 @@ export default function ProductGrid({
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const { openPreview } = useProductPreview();
 
   const items = products?.map(productToItem) ?? [];
 
@@ -160,29 +163,40 @@ export default function ProductGrid({
             aria-label="Product carousel"
           >
             {items.map((item) => (
-              <a
+              <div
                 key={item.id}
-                href={`/products/${item.handle}?p=${item.id}`}
-                className="group flex min-w-[calc(50%-0.5rem)] shrink-0 flex-col overflow-hidden focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 sm:min-w-[calc(25%-0.75rem)]"
+                className="group relative flex min-w-[calc(50%-0.5rem)] shrink-0 flex-col overflow-hidden sm:min-w-[calc(25%-0.75rem)]"
               >
-                <div className="aspect-3/4 w-full overflow-hidden bg-zinc-200">
-                  {item.image?.url ? (
-                    <Image
-                      src={item.image.url}
-                      alt={item.image.altText ?? item.title}
-                      width={240}
-                      height={320}
-                      quality={100}
-                      className="h-full w-full object-cover object-center transition group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-linear-to-b from-zinc-300 to-zinc-400" />
-                  )}
-                </div>
-                <p className="mt-3 text-xs text-center font-medium uppercase tracking-wide text-black group-hover:underline">
-                  {item.title}
-                </p>
-              </a>
+                <Link
+                  href={`/products/${item.handle}`}
+                  className="flex flex-col focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                >
+                  <div className="aspect-3/4 w-full overflow-hidden bg-zinc-200">
+                    {item.image?.url ? (
+                      <Image
+                        src={item.image.url}
+                        alt={item.image.altText ?? item.title}
+                        width={240}
+                        height={320}
+                        quality={100}
+                        className="h-full w-full object-cover object-center transition group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-linear-to-b from-zinc-300 to-zinc-400" />
+                    )}
+                  </div>
+                  <p className="mt-3 text-center text-xs font-medium uppercase tracking-wide text-black group-hover:underline">
+                    {item.title}
+                  </p>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => openPreview(item.handle)}
+                  className="absolute bottom-12 left-1/2 -translate-x-1/2 border border-black bg-white px-4 py-2 text-xs font-medium uppercase tracking-widest text-black opacity-0 transition group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                >
+                  Quick view
+                </button>
+              </div>
             ))}
           </div>
 
