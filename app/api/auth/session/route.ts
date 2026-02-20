@@ -29,11 +29,14 @@ const customerQuery = `
 export async function GET() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(authCookies.session.name)?.value;
+  console.log("DEBUG session cookie present:", !!sessionCookie);
   if (!sessionCookie) {
     return NextResponse.json({ customer: null });
   }
 
   const accessToken = decodeSessionCookie(sessionCookie);
+  console.log("DEBUG accessToken decoded:", !!accessToken);
+  console.log("DEBUG accessToken prefix:", accessToken?.substring(0, 10));
   if (!accessToken) {
     return NextResponse.json({ customer: null });
   }
@@ -43,11 +46,14 @@ export async function GET() {
     const apiUrl = `https://${domain}/.well-known/customer-account-api`;
     const configRes = await fetch(apiUrl);
     if (!configRes.ok) {
+      console.log("DEBUG customer-account-api config failed:", configRes.status);
       return NextResponse.json({ customer: null });
     }
-    const config = (await configRes.json()) as { api_endpoint?: string };
-    const apiEndpoint = config.api_endpoint;
+    const config = (await configRes.json()) as { graphql_api?: string; api_endpoint?: string };
+    const apiEndpoint = config.graphql_api || config.api_endpoint;
+    console.log("DEBUG apiEndpoint:", apiEndpoint);
     if (!apiEndpoint) {
+      console.log("DEBUG no api_endpoint in config");
       return NextResponse.json({ customer: null });
     }
 
@@ -55,12 +61,14 @@ export async function GET() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: accessToken,
       },
       body: JSON.stringify({ query: customerQuery }),
     });
 
     if (!gqlRes.ok) {
+      const text = await gqlRes.text();
+      console.log("DEBUG gql failed:", gqlRes.status, text);
       return NextResponse.json({ customer: null });
     }
 
@@ -68,8 +76,10 @@ export async function GET() {
       data?: { customer?: { id: string; firstName?: string; lastName?: string; emailAddress?: { emailAddress?: string } } };
       errors?: Array<{ message: string }>;
     };
+    console.log("DEBUG gqlData:", JSON.stringify(gqlData));
 
     if (gqlData.errors?.length || !gqlData.data?.customer) {
+      console.log("DEBUG gql errors or no customer");
       return NextResponse.json({ customer: null });
     }
 

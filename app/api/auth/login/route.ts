@@ -10,6 +10,12 @@ import {
 } from "@/app/utils/auth";
 
 function callbackUrl(request: Request): string {
+  const headers = new Headers(request.headers);
+  const host = headers.get("x-forwarded-host") || headers.get("host");
+  const proto = headers.get("x-forwarded-proto") || "https";
+  if (host) {
+    return `${proto}://${host}/api/auth/callback`;
+  }
   const url = new URL(request.url);
   return `${url.origin}/api/auth/callback`;
 }
@@ -26,13 +32,15 @@ export async function GET(request: Request) {
     const pkceValue = encodePkceCookie(state, codeVerifier);
     const redirectUri = callbackUrl(request);
 
+    console.log("DEBUG request.url:", request.url);
+    console.log("DEBUG redirectUri:", redirectUri);
     const authUrl = new URL(openId.authorization_endpoint);
     authUrl.searchParams.set("client_id", clientId);
     authUrl.searchParams.set("response_type", "code");
     authUrl.searchParams.set("redirect_uri", redirectUri);
     authUrl.searchParams.set(
       "scope",
-      "openid email profile https://api.shopify.com/auth/customer-account-api:full"
+      "openid email customer-account-api:full"
     );
     authUrl.searchParams.set("state", state);
     authUrl.searchParams.set("code_challenge", codeChallenge);

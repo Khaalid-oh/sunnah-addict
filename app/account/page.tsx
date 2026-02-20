@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import AnnouncementBar from "../components/AnnouncementBar";
 import Footer from "../components/Footer";
@@ -9,12 +8,6 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function AccountPage() {
   const { customer, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !customer) {
-      window.location.href = `/api/auth/login?returnTo=${encodeURIComponent("/account")}`;
-    }
-  }, [customer, loading]);
 
   if (loading) {
     return (
@@ -30,7 +23,24 @@ export default function AccountPage() {
   }
 
   if (!customer) {
-    return null;
+    return (
+      <div className="min-h-screen bg-white font-sans text-zinc-900">
+        <AnnouncementBar />
+        <Header />
+        <main className="border-t border-zinc-200 px-4 py-12">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm text-zinc-600">You need to be logged in to view your account.</p>
+            <a
+              href="/api/auth/login"
+              className="mt-4 inline-block text-sm font-medium underline hover:no-underline"
+            >
+              Log in
+            </a>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   const displayName = [customer.firstName, customer.lastName]
