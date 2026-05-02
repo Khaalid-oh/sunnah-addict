@@ -7,13 +7,9 @@ import {
   useEffect,
   useState,
 } from "react";
+import type { SessionCustomer } from "../types/session-customer";
 
-export type SessionCustomer = {
-  id: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  email?: string | null;
-};
+export type { SessionCustomer } from "../types/session-customer";
 
 type AuthContextValue = {
   customer: SessionCustomer | null;
@@ -29,7 +25,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refetch = useCallback(async () => {
     try {
-      const res = await fetch("/api/auth/session");
+      const res = await fetch("/api/auth/session", {
+        credentials: "include",
+        cache: "no-store",
+      });
       const data = (await res.json()) as { customer?: SessionCustomer | null };
       setCustomer(data.customer ?? null);
     } catch {

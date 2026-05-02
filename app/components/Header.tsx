@@ -233,8 +233,8 @@ export default function Header() {
                   </a>
                 </>
               ) : (
-                <a
-                  href="/api/auth/login"
+                <Link
+                  href="/login"
                   className="relative hidden h-10 w-10 shrink-0 items-center justify-center text-zinc-600 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 lg:flex"
                   aria-label="Log in"
                 >
@@ -252,7 +252,7 @@ export default function Header() {
                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
-                </a>
+                </Link>
               )}
             </>
           )}
@@ -335,12 +335,12 @@ export default function Header() {
                       </a>
                     </>
                   ) : (
-                    <a
-                      href="/api/auth/login"
+                    <Link
+                      href="/login"
                       className="border-l-2 border-transparent px-4 py-3 text-sm font-medium uppercase tracking-widest text-zinc-700 transition hover:bg-zinc-50"
                     >
                       Log in
-                    </a>
+                    </Link>
                   )}
                 </>
               )}

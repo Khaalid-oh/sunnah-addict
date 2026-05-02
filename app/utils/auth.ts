@@ -1,3 +1,5 @@
+import type { NextResponse } from "next/server";
+
 /**
  * Shopify Customer Account API auth (OAuth 2.0 + PKCE).
  * Requires: SESSION_SECRET or AUTH_SECRET (min 32 chars),
@@ -8,6 +10,8 @@ import { createHash, createHmac, randomBytes } from "crypto";
 
 const PKCE_COOKIE = "shopify_pkce";
 const SESSION_COOKIE = "shopify_customer_session";
+/** Storefront API customer access token (legacy/classic customer accounts). */
+const STOREFRONT_CUSTOMER_SESSION_COOKIE = "shopify_sf_customer_session";
 const PKCE_MAX_AGE = 60 * 10; // 10 minutes
 const SESSION_MAX_AGE = 60 * 60 * 24 * 14; // 14 days
 
@@ -83,7 +87,37 @@ export const authCookies = {
     name: SESSION_COOKIE,
     maxAge: SESSION_MAX_AGE,
   },
+  storefrontCustomer: {
+    name: STOREFRONT_CUSTOMER_SESSION_COOKIE,
+    maxAge: SESSION_MAX_AGE,
+  },
 };
+
+export function storefrontSessionMaxAgeSeconds(expiresAtIso?: string): number {
+  const fallback = authCookies.storefrontCustomer.maxAge;
+  if (!expiresAtIso) return fallback;
+  const ms = new Date(expiresAtIso).getTime() - Date.now();
+  if (!Number.isFinite(ms) || ms <= 0) return fallback;
+  return Math.min(Math.floor(ms / 1000), fallback);
+}
+
+export function applyStorefrontCustomerSessionCookie(
+  response: NextResponse,
+  accessToken: string,
+  expiresAtIso?: string
+): void {
+  const maxAge = storefrontSessionMaxAgeSeconds(expiresAtIso);
+  const sessionValue = encodeSessionCookie(accessToken);
+  response.cookies.delete(authCookies.session.name);
+  response.cookies.delete(authCookies.pkce.name);
+  response.cookies.set(authCookies.storefrontCustomer.name, sessionValue, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge,
+    path: "/",
+  });
+}
 
 export function getStoreDomain(): string {
   const domain =

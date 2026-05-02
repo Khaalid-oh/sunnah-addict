@@ -6,8 +6,11 @@ import {
   generateCodeChallenge,
   generateState,
   encodePkceCookie,
+  applyStorefrontCustomerSessionCookie,
   authCookies,
 } from "@/app/utils/auth";
+import { storefront } from "@/app/utils/storefront";
+import { customerAccessTokenCreateMutation } from "@/app/utils/mutations";
 
 function callbackUrl(request: Request): string {
   const headers = new Headers(request.headers);
@@ -59,6 +62,80 @@ export async function GET(request: Request) {
     console.error("Auth login error:", err);
     return NextResponse.redirect(
       new URL("/?error=auth_config", request.url).toString()
+    );
+  }
+}
+
+type CustomerUserError = {
+  code?: string | null;
+  field?: string[] | null;
+  message: string;
+};
+
+export async function POST(request: Request) {
+  try {
+    const body = (await request.json()) as {
+      email?: string;
+      password?: string;
+    };
+    const email = typeof body.email === "string" ? body.email.trim() : "";
+    const password = typeof body.password === "string" ? body.password : "";
+
+    if (!email || !password) {
+      return NextResponse.json(
+        { ok: false, error: "Email and password are required." },
+        { status: 400 }
+      );
+    }
+
+    const res = await storefront(customerAccessTokenCreateMutation, {
+      input: { email, password },
+    });
+
+    if (res?.errors?.length) {
+      const msg = res.errors
+        .map((e: { message?: string }) => e.message)
+        .filter(Boolean)
+        .join(" ");
+      return NextResponse.json(
+        {
+          ok: false,
+          error: msg || "Login request failed.",
+          graphQLErrors: res.errors,
+        },
+        { status: 502 }
+      );
+    }
+
+    const payload = res?.data?.customerAccessTokenCreate;
+    const customerUserErrors: CustomerUserError[] =
+      payload?.customerUserErrors ?? [];
+    const tokenObj = payload?.customerAccessToken ?? null;
+
+    if (customerUserErrors.length > 0) {
+      return NextResponse.json({
+        ok: false,
+        customerUserErrors,
+      });
+    }
+
+    const accessToken = tokenObj?.accessToken as string | undefined;
+    const expiresAt = tokenObj?.expiresAt as string | undefined;
+    if (!accessToken) {
+      return NextResponse.json(
+        { ok: false, error: "Could not sign in. Please try again." },
+        { status: 422 }
+      );
+    }
+
+    const nextRes = NextResponse.json({ ok: true });
+    applyStorefrontCustomerSessionCookie(nextRes, accessToken, expiresAt);
+    return nextRes;
+  } catch (err) {
+    console.error("Storefront login error:", err);
+    return NextResponse.json(
+      { ok: false, error: "Something went wrong. Please try again." },
+      { status: 500 }
     );
   }
 }

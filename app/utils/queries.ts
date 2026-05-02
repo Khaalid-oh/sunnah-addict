@@ -5,6 +5,12 @@ export const cartQuery = gql`
     cart(id: $id) {
       id
       checkoutUrl
+      cost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+      }
       lines(first: 100) {
         edges {
           node {
@@ -27,7 +33,12 @@ export const cartQuery = gql`
                   currencyCode
                 }
                 product {
+                  title
                   handle
+                  featuredImage {
+                    url
+                    altText
+                  }
                 }
               }
             }

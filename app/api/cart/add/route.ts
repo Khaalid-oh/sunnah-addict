@@ -5,8 +5,7 @@ import {
   cartCreateMutation,
   cartLinesAddMutation,
 } from "@/app/utils/mutations";
-
-const CART_ID_COOKIE = "shopify_cart_id";
+import { SHOPIFY_CART_ID_COOKIE } from "@/app/utils/shopify-cart";
 
 export async function POST(request: Request) {
   try {
@@ -22,7 +21,7 @@ export async function POST(request: Request) {
     }
 
     const cookieStore = await cookies();
-    let cartId = cookieStore.get(CART_ID_COOKIE)?.value;
+    let cartId = cookieStore.get(SHOPIFY_CART_ID_COOKIE)?.value;
 
     if (cartId) {
       const addRes = await storefront(cartLinesAddMutation, {
@@ -46,7 +45,9 @@ export async function POST(request: Request) {
     }
 
     const createRes = await storefront(cartCreateMutation, {
-      lines: [{ merchandiseId: variantId, quantity }],
+      input: {
+        lines: [{ merchandiseId: variantId, quantity }],
+      },
     });
     const userErrors =
       createRes?.data?.cartCreate?.userErrors ?? [];
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
         cartId: newCartId,
         checkoutUrl,
       });
-      res.cookies.set(CART_ID_COOKIE, newCartId, {
+      res.cookies.set(SHOPIFY_CART_ID_COOKIE, newCartId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",

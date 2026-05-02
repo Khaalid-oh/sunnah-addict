@@ -104,6 +104,7 @@ export async function GET(request: Request) {
 
     const res = NextResponse.redirect(new URL(returnTo, origin).toString());
     res.cookies.delete(authCookies.pkce.name);
+    res.cookies.delete(authCookies.storefrontCustomer.name);
     res.cookies.set(authCookies.session.name, sessionValue, {
       httpOnly: true,
       secure: true,

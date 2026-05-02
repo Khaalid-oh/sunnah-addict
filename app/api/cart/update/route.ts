@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { storefront } from "@/app/utils/storefront";
 import { cartLinesUpdateMutation } from "@/app/utils/mutations";
-
-const CART_ID_COOKIE = "shopify_cart_id";
+import { SHOPIFY_CART_ID_COOKIE } from "@/app/utils/shopify-cart";
 
 export async function POST(request: Request) {
   try {
@@ -19,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     const cookieStore = await cookies();
-    const cartId = cookieStore.get(CART_ID_COOKIE)?.value;
+    const cartId = cookieStore.get(SHOPIFY_CART_ID_COOKIE)?.value;
     if (!cartId) {
       return NextResponse.json({ error: "No cart" }, { status: 400 });
     }

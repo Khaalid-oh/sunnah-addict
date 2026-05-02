@@ -12,6 +12,7 @@ export async function GET(request: Request) {
   const res = NextResponse.redirect(new URL(returnTo, origin).toString());
   res.cookies.delete(authCookies.session.name);
   res.cookies.delete(authCookies.pkce.name);
+  res.cookies.delete(authCookies.storefrontCustomer.name);
   return res;
 }
 
@@ -19,5 +20,6 @@ export async function POST() {
   const res = NextResponse.json({ ok: true });
   res.cookies.delete(authCookies.session.name);
   res.cookies.delete(authCookies.pkce.name);
+  res.cookies.delete(authCookies.storefrontCustomer.name);
   return res;
 }

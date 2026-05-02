@@ -9,7 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@apollo/client": "^4.1.9",
     "@shopify/storefront-api-client": "^1.0.9",
+    "graphql": "^16.13.2",
     "next": "16.1.5",
     "react": "19.2.3",
     "react-dom": "19.2.3"
